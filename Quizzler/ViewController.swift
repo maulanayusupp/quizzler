@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     let allQuestions = QuestionBank();
     var pickedAnswer : Bool = false;
     var questionNumber : Int = 0;
+    var score : Int = 0;
     
     @IBOutlet weak var questionLabel: UILabel!
     @IBOutlet weak var scoreLabel: UILabel!
@@ -24,8 +25,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let firstQuestion = allQuestions.list[questionNumber];
-        questionLabel.text = firstQuestion.questionText;
+        nextQuestion();
     }
 
 
@@ -43,13 +43,18 @@ class ViewController: UIViewController {
     
     
     func updateUI() {
-      
+        scoreLabel.text = "Score: \(score)"
+        progressLabel.text = "\(questionNumber + 1) / \(allQuestions.list.count - 1)"
+        
+//        var totalQuestions = Float(allQuestions.list.count - 1);
+        progressBar.frame.size.width = (view.frame.size.width / 12) * CGFloat(questionNumber + 1)
     }
     
 
     func nextQuestion() {
         if (questionNumber < allQuestions.list.count - 1) {
             questionLabel.text = allQuestions.list[questionNumber].questionText;
+            updateUI();
         } else {
 
             let alert = UIAlertController(title: "Awesone", message: "You've finished all the questions, do you want to start over?", preferredStyle: .alert)
@@ -70,9 +75,10 @@ class ViewController: UIViewController {
         let correctAnswer = allQuestions.list[questionNumber].answer;
         
         if (correctAnswer == pickedAnswer) {
-            print("You got it!");
+            ProgressHUD.showSuccess("Correct")
+            score = score + 1;
         } else {
-            print("Wrong");
+            ProgressHUD.showError("Wrong!")
         }
     }
     
